@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Framemark | Previs and shot planning inside Unreal Engine</title>
+<meta name="description" content="Previs and shot planning inside Unreal Engine. One stage holds your marks, cameras, lights and Level Sequence, with a 2D floor plan that is the same data as the shot.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--page:#0B0B0F;--ink:#D9DBE1;--soft:#8E95A5;--gold:#D7B16B;--panel:#15161E;--line:#2c2f38;--link:#8fb4ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.65 "IBM Plex Sans","Segoe UI",Arial,sans-serif}
+a{color:var(--link)}a:hover{color:#fff}
+.top{background:linear-gradient(120deg,#14151c 0%,#2a2417 55%,#6b5628 100%);text-align:center;padding:56px 20px 48px;border-bottom:1px solid var(--line)}
+.top svg{width:64px;height:64px;margin-bottom:10px}
+.top h1{font:600 clamp(34px,6vw,52px)/1.1 Outfit,sans-serif;margin:0 0 12px;color:#fff;letter-spacing:-.01em}
+.top p{max-width:640px;margin:0 auto 22px;color:#dcd6c6;font-size:18px}
+.btn{display:inline-block;padding:9px 20px;border:1px solid rgba(255,255,255,.35);border-radius:6px;color:#fff;text-decoration:none;margin:4px;font-weight:500}
+.btn:hover{background:rgba(255,255,255,.12);color:#fff}
+main{max-width:860px;margin:0 auto;padding:32px 20px 64px}
+h2{font:600 28px/1.2 Outfit,sans-serif;color:var(--gold);margin:44px 0 14px;padding-top:6px}
+h2:first-child{margin-top:0}
+h3{font:600 19px Outfit,sans-serif;color:#fff;margin:26px 0 6px}
+.meta p{margin:6px 0}.meta b{color:#fff}
+code,kbd{font:500 14px "JetBrains Mono",monospace;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+ul,ol{padding-left:22px}li{margin:4px 0}
+.toc{columns:2;column-gap:32px;margin:0;padding-left:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.card h3{margin:0 0 6px;color:var(--gold)}.card ul{margin:0;color:var(--soft);padding-left:18px}
+figure{margin:20px 0}figure img{max-width:100%;border:1px solid var(--line);border-radius:8px;display:block}
+figcaption{color:var(--soft);font-size:14px;margin-top:6px}
+.note{border-left:3px solid var(--gold);background:var(--panel);padding:10px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+footer{border-top:1px solid var(--line);color:var(--soft);font-size:14px;padding:24px 20px 40px;text-align:center}
+@media(max-width:620px){.toc{columns:1}}
+</style></head><body>
+<header class="top">
+<svg viewBox="0 0 100 100" aria-label="Framemark"><path d="M6 30V6h24M70 6h24v24M94 70v24H70M30 94H6V70" fill="none" stroke="#EAEBEE" stroke-width="6" stroke-linecap="square"/><circle cx="44" cy="54" r="19" fill="#D7B16B" fill-opacity=".3" stroke="#D7B16B" stroke-width="4"/><path d="M57 41L70 28" stroke="#D7B16B" stroke-width="4"/><path d="M74 24l-2 12-10-10z" fill="#D7B16B"/></svg>
+<h1>Framemark</h1>
+<p>Previs and shot planning inside Unreal Engine. The plan is the shot: a 2D floor plan that edits the same marks, cameras and lights as the level.</p>
+<a class="btn" href="manual/">Read the manual</a><a class="btn" href="manual/fr.html">Français</a><a class="btn" href="manual/zh.html">简体中文</a>
+</header>
+
+<main>
+<h2 id="framemark">Framemark</h2>
+<p>Framemark is an Unreal Engine editor plugin for staging cinematics. One stage fences off the playing area, holds a mark for every character, owns the cameras and lights you place, and owns the Level Sequence. Move the stage and the whole scene moves with it, keyed animation included.</p>
+<div class="meta">
+<p><b>Engine:</b> Unreal Engine 5.8</p>
+<p><b>Platform:</b> Windows 64-bit</p>
+<p><b>Interface languages:</b> English, French, Simplified Chinese</p>
+<p><b>Manual:</b> <a href="manual/">English</a>, <a href="manual/fr.html">Français</a>, <a href="manual/zh.html">简体中文</a></p>
+</div>
+
+<h3>Contents</h3>
+<ul class="toc">
+<li><a href="#quick-start">Quick start</a></li>
+<li><a href="#workflow">Workflow</a></li>
+<li><a href="#plan">Plan</a></li>
+<li><a href="#stage-and-block">Stage and block</a></li>
+<li><a href="#shoot-and-light">Shoot and light</a></li>
+<li><a href="#sequence">Sequence</a></li>
+<li><a href="#screenplay">Screenplay and Story Map</a></li>
+<li><a href="#share">Share and render</a></li>
+<li><a href="#learn">Made to be learned quickly</a></li>
+<li><a href="#good-to-know">Good to know</a></li>
+<li><a href="#documentation">Documentation</a></li>
+</ul>
+
+<h2 id="quick-start">Quick start</h2>
+<ol>
+<li>Enable <b>Framemark</b> in <b>Edit &gt; Plugins</b> and restart the editor.</li>
+<li>Choose <b>Framemark</b> in the Mode switcher. On the Home page, press <b>Add Stage</b>. The stage lands where the viewport is looking and gets a Player mark and an NPC mark.</li>
+<li>Choose <b>Place Camera</b> and click in the viewport. The camera aims at the nearest eye line as you place it.</li>
+<li>Fly to the framing you want, select the camera and press <b>Set To Viewport</b>.</li>
+<li>Open the <b>Sequence</b> page and press <b>Build Sequence</b>. Framemark creates the Level Sequence and opens Sequencer.</li>
+<li>Press <kbd>Tab</kbd> in the viewport to open the Quick Wheel. That is most of the tool.</li>
+</ol>
+<figure><img src="manual/media/fm_stage_overview.jpg" alt="A finished stage in the Level Viewport: marks, cameras and the boundary"><figcaption>A finished stage in the Level Viewport: marks, cameras and the boundary.</figcaption></figure>
+<p>Every button is one undo step.</p>
+
+<h2 id="workflow">Workflow</h2>
+<p>Six pages, in the order of the work: <b>Plan</b> (draw it top down), <b>Stage</b> (place marks), <b>Block</b> (cast and move), <b>Shoot</b> (cameras and lights), <b>Sequence</b> (build the shot list) and <b>Share</b> (export and render).</p>
+<figure><img src="manual/media/fm_planner.png" alt="The 2D Planner" style="max-width:420px"><figcaption>The 2D Planner edits the same marks, cameras and lights as the 3D level.</figcaption></figure>
+
+<h2 id="plan">Plan</h2>
+<ul><li>2D Planner that edits the same marks, cameras and lights as the 3D level</li><li>Movement paths, grid and guide snapping, background picture</li><li>Export the plan as PNG, SVG or PDF</li></ul>
+
+<h2 id="stage-and-block">Stage and block</h2>
+<ul><li>Marks with order, facing and role</li><li>Ten ready layouts for two, three and more characters</li><li>Setups, and a Marks Table for the whole cast</li></ul>
+
+<h2 id="shoot-and-light">Shoot and light</h2>
+<ul><li>Fly to a framing, press Set To Viewport</li><li>Lens list, shot scales, optional coverage preset</li><li>Lights aim at the nearest eye line as you place them</li><li>One click gives a character key, fill, rim and eye light</li><li>One look for every shot, re-aimed at each camera cut</li><li>Shot overrides that survive base look changes</li></ul>
+
+<h2 id="sequence">Sequence</h2>
+<ul><li>Build Sequence makes the Level Sequence and a track per camera</li><li>Key To Mark moves an actor from mark to mark</li><li>Continuity tools between shots</li></ul>
+<figure><img src="manual/media/fm_sequencer.png" alt="The generated Level Sequence in Sequencer"><figcaption>The generated Level Sequence, one track per camera.</figcaption></figure>
+
+<h2 id="screenplay">Screenplay and Story Map</h2>
+<ul><li>Import Fountain, Final Draft, plain text, ink and articy:draft</li><li>Generate stages from scenes, cast and props</li><li>Write changes back to ink and articy</li></ul>
+
+<h2 id="share">Share and render</h2>
+<ul><li>Export and import a stage as a file</li><li>USD and FBX export with a change list before anything is applied</li><li>Six Movie Render Graph templates</li></ul>
+
+<h2 id="learn">Made to be learned quickly</h2>
+<ul><li>Every button is one undo step</li><li>Workspaces, Quick Wheel, editable toolbar</li><li>English, French and Simplified Chinese interface</li></ul>
+
+<h2 id="good-to-know">Good to know</h2>
+<div class="note">Framemark is an editor plugin. The stage boundary, marks and labels are editor only, and nothing is added to your packaged game except the stage's runtime data.</div>
+
+<h2 id="documentation">Documentation</h2>
+<p>The manual covers one scene from plan to render, with every panel page, setting and companion plugin, plus a worked case study.</p>
+<p><a href="manual/">English</a> &middot; <a href="manual/fr.html">Français</a> &middot; <a href="manual/zh.html">简体中文</a></p>
+</main>
+<footer>Framemark is a Lumenon product. Unreal Engine is a trademark of Epic Games, Inc.</footer>
+</body></html>
